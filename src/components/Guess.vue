@@ -10,6 +10,8 @@
 </template>
 
 <script>
+import cache from '../libs/cache'
+
 export default {
   name: 'Guess',
   data () {
@@ -22,9 +24,25 @@ export default {
     }
   },
   methods: {
-    submit: function () {
-      alert('1')
+    submit () {
+      this.axios.post('/guess/add', {
+        url: window.location.href
+      }).then(res => {
+        cache.set(this.resultKey, res.data)
+      }).catch(() => {
+        cache.set(this.resultKey, {
+          openid: '123',
+          amount: '125.67'
+        })
+        this.reload()
+      })
+    },
+    reload () {
+      window.location.reload()
     }
+  },
+  created () {
+    this.resultKey = this.GLOBAL.resultKey
   }
 }
 </script>

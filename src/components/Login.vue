@@ -19,7 +19,7 @@ export default {
       return cache.get(this.loginKey) !== null
     },
     login () {
-      this.axios.post('/login', {
+      this.axios.post('/wechat/login', {
         url: window.location.href
       }).then(res => {
         cache.set(this.loginKey, res.data)

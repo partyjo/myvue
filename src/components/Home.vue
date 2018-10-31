@@ -28,8 +28,15 @@ export default {
   },
   created () {
     this.loginKey = this.GLOBAL.loginKey
-    if (cache.get(this.loginKey)) {
-      this.pageIndex = 1
+    this.resultKey = this.GLOBAL.resultKey
+    this.userinfo = cache.get(this.loginKey)
+    if (this.userinfo) {
+      const result = cache.get(this.resultKey)
+      if (result) {
+        this.pageIndex = 1
+      } else {
+        this.pageIndex = 0
+      }
     }
   }
 }

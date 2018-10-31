@@ -11,18 +11,27 @@ export default {
   name: 'Result',
   data () {
     return {
-      msg: 'Welcome to Your Vue.js App'
+      result: null
     }
   },
   methods: {
     getGuessResult () {
-      this.axios.get('/guess/result?openid=' + this.userInfo.openid).then(res => {
-        console.log(res)
+      this.axios.get('/guess/get?openid=' + this.userInfo.openid).then(res => {
+        if (res.success) {
+          cache.set(this.resultKey, res.data)
+          this.result = res.data
+        } else {
+          this.reload()
+        }
       })
+    },
+    reload () {
+      window.location.reload()
     }
   },
   created () {
     this.loginKey = this.GLOBAL.loginKey
+    this.resultKey = this.GLOBAL.resultKey
     this.userInfo = cache.get(this.loginKey)
     this.getGuessResult()
   }

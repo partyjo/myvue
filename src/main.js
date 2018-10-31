@@ -9,6 +9,12 @@ import router from './router'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 import config from './libs/config'
+import layer from 'vue-layer'
+
+Vue.prototype.GLOBAL = config
+Vue.prototype.$layer = layer(Vue, {
+  msgtime: 3
+})
 
 const instance = axios.create({
   baseURL: '/api/',
@@ -18,9 +24,26 @@ const instance = axios.create({
   }
 })
 
+instance.interceptors.request.use(config => {
+  return config
+}, err => {
+  this.$layer.msg('请求超时!')
+  return Promise.reject(err)
+})
+
+instance.interceptors.response.use(res => {
+  if (res.success) {
+    return Promise.resolve(res)
+  } else {
+    this.$layer.msg(res.msg | '接口异常')
+  }
+}, err => {
+  this.$layer.msg('服务器出错')
+  return Promise.reject(err)
+})
+
 Vue.use(VueAxios, instance)
 Vue.config.productionTip = false
-Vue.prototype.GLOBAL = config
 
 /* eslint-disable no-new */
 new Vue({
