@@ -17,7 +17,7 @@ Vue.prototype.$layer = layer(Vue, {
 })
 
 const instance = axios.create({
-  baseURL: '/api/',
+  baseURL: '/apis',
   timeout: 1000,
   headers: {
     'X-Custom-Header': 'foobar'

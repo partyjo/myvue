@@ -19,17 +19,17 @@ export default {
       return cache.get(this.loginKey) !== null
     },
     login () {
-      this.axios.post('/wechat/login', {
+      this.axios.post('/weixin/isLoginTest', {
         url: window.location.href
       }).then(res => {
-        cache.set(this.loginKey, res.data)
-      }).catch(() => {
-        cache.set(this.loginKey, {
-          openid: '123',
-          nickname: 'zhangmin',
-          headimgurl: ''
-        })
-        this.reload()
+        if (res.code === 0) {
+          cache.set(this.loginKey, res.data)
+          this.reload()
+        } else if (res.code === 9999) {
+          window.location.href = res.data
+        } else {
+          this.$layer.msg(res.msg)
+        }
       })
     },
     reload () {

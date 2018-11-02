@@ -28,13 +28,12 @@ export default {
       this.axios.post('/guess/add', {
         url: window.location.href
       }).then(res => {
-        cache.set(this.resultKey, res.data)
-      }).catch(() => {
-        cache.set(this.resultKey, {
-          openid: '123',
-          amount: '125.67'
-        })
-        this.reload()
+        if (res.code === 0) {
+          cache.set(this.resultKey, res.data)
+          this.reload()
+        } else {
+          this.$layer.msg(res.msg)
+        }
       })
     },
     reload () {

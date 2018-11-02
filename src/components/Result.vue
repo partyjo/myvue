@@ -17,16 +17,13 @@ export default {
   methods: {
     getGuessResult () {
       this.axios.get('/guess/get?openid=' + this.userInfo.openid).then(res => {
-        if (res.success) {
+        if (res.code === 0) {
           cache.set(this.resultKey, res.data)
           this.result = res.data
         } else {
-          this.reload()
+          this.$layer.msg(res.msg)
         }
       })
-    },
-    reload () {
-      window.location.reload()
     }
   },
   created () {
