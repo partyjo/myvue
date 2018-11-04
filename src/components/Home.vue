@@ -3,7 +3,7 @@
     <guess v-if="pageIndex === 0" />
     <Reuslt v-else-if="pageIndex === 1" />
     <Login v-else />
-    <WechatShare />
+    <!-- <WechatShare /> -->
   </div>
 </template>
 
@@ -45,14 +45,15 @@ export default {
       if (result) {
         this.pageIndex = 1
       } else {
-        this.getGuessResult(res => {
-          if (res.code === 0) {
-            cache.set(this.resultKey, res.data)
-            this.pageIndex = 1
-          } else {
-            this.pageIndex = 0
-          }
-        })
+        // this.getGuessResult(res => {
+        //   if (res.code === 0) {
+        //     cache.set(this.resultKey, res.data)
+        //     this.pageIndex = 1
+        //   } else {
+        //     this.pageIndex = 0
+        //   }
+        // })
+        this.pageIndex = 0
       }
     }
   }

@@ -7,7 +7,9 @@ body {
   margin: 0 auto;
   max-width: 750px;
   min-height: 100%;
-  background-color: #f2f2f2;
+  background-image: url('../assets/bg.png');
+  background-size: 100% auto;
+  background-repeat: repeat-y;
 }
 
 #app {

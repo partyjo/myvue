@@ -1,0 +1,31 @@
+.wd(@w, @h) {
+  width: @w * 1px;
+  height: @h * 1px;
+}
+.bg(@url) {
+  background-image: url('@{url}');
+  background-repeat: no-repeat;
+  background-size: 100% auto;
+}
+.ps(@l, @t) {
+  position: absolute;
+  left: @l * 1px;
+  top: @t * 1px;
+}
+.pb(@l, @b) {
+  position: absolute;
+  left: @l * 1px;
+  bottom: @b * 1px;
+}
+.ptc(@t) {
+  position: absolute;
+  left: 50%;
+  top: @t * 1px;
+  transform: translate(-50%);
+}
+.pbc(@b) {
+  position: absolute;
+  left: 50%;
+  bottom: @b * 1px;
+  transform: translate(-50%);
+}

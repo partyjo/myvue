@@ -1,7 +1,5 @@
 <template>
-  <div class="page">
-    <div class="login">登陆中</div>
-  </div>
+  <div class="login">{{msg}}</div>
 </template>
 
 <script>
@@ -11,7 +9,7 @@ export default {
   name: 'Login',
   data () {
     return {
-      msg: 'Welcome to Your Vue.js App'
+      msg: '登陆中...'
     }
   },
   methods: {
@@ -30,9 +28,17 @@ export default {
         } else {
           this.$layer.msg(res.msg)
         }
+      }).catch(() => {
+        cache.set(this.loginKey, {
+          openid: '123456',
+          nickname: '阿敏',
+          headimgurl: ''
+        })
+        this.reload()
       })
     },
     reload () {
+      this.msg = '登陆成功，跳转中...'
       window.location.reload()
     }
   },
@@ -40,6 +46,8 @@ export default {
     this.loginKey = this.GLOBAL.loginKey
     if (!this.isLogin()) {
       this.login()
+    } else {
+      this.reload()
     }
   }
 }
@@ -47,12 +55,10 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang='less'>
-  .page {
-    background-color: #f2f2f2;
-
-    .login {
-      text-align: center;
-      font-size: 20px;
-    }
+  .login {
+    padding: 40px;
+    text-align: center;
+    color: #fff;
+    font-size: 30px;
   }
 </style>
