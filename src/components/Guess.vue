@@ -3,12 +3,12 @@
     <div class="light-bg"></div>
     <div class="light"></div>
     <div class="tm"></div>
-    <div class="lunbo">
+    <div class="lunbo" v-if="lists.length">
       <div class="scroll">
         <ul>
-          <li v-for="item in lists" :key="item.id">
-            <span class="headimgurl" v-bind:class="{ 'background-image': item.headimgurl }"></span>
-            <span class="txt">{{item.nickname}}{{item.create_time}} 参与了竞猜</span>
+          <li>
+            <span class="headimgurl" v-bind:style="{ 'background-image': 'url(' + list.headimgurl + ')' }"></span>
+            <span class="txt">{{list.nickname}} 1秒前 参与了竞猜</span>
           </li>
         </ul>
       </div>
@@ -37,14 +37,14 @@
           <span>亿元</span>
         </div>
         <div class="form-group form-field-mobile">
-          <input type="number" name="mobile" v-model.number="guessData.mobile" placeholder="输入手机号后参与活动">
+          <input type="number" name="mobile" v-model.number="guessData.mobile" placeholder="输入领奖手机号后参与活动">
         </div>
         <button class="submit" v-on:click="submit"></button>
       </div>
     </div>
     <div class="copyright">
       <div class="logo"></div>
-      <a href="http://m.baidu.com">点击了解小亚通 >></a>
+      <div class="zanzhu"><Zanzhu /></div>
       <div class="jieshi">.此活动最终解释权归牛气学堂所有</div>
     </div>
     <div v-if="modalIndex === 0" class="modal modal-rule">
@@ -73,10 +73,15 @@
 <script>
 import { formatPrice } from '../libs/math'
 import { sTohms } from '../libs/date'
+import { isApple } from '../libs/ua'
 import cache from '../libs/cache'
+import Zanzhu from './Zanzhu'
 
 export default {
   name: 'Guess',
+  components: {
+    Zanzhu
+  },
   data () {
     return {
       endTime: '11月11日20:00',
@@ -85,25 +90,18 @@ export default {
         m: 0,
         s: 0
       },
-      lists: [
-        {
-          id: 1,
-          headimgrul: '',
-          nickname: '阿敏',
-          create_time: ''
-        },
-        {
-          id: 2,
-          headimgrul: '',
-          nickname: '阿2',
-          create_time: ''
-        }
-      ],
+      listIndex: 0,
+      lists: [],
       guessData: {
         mobile: '',
         amount: ''
       },
       modalIndex: null
+    }
+  },
+  computed: {
+    list () {
+      return this.lists[this.listIndex]
     }
   },
   methods: {
@@ -115,7 +113,12 @@ export default {
     },
     countDown () {
       const nowTime = new Date().getTime()
-      const endTime = new Date('2018-11-03 16:00:00').getTime()
+      let endTime = 0
+      if (isApple) {
+        endTime = new Date('2018-11-11 20:00:00'.replace(/-/g, '/')).getTime()
+      } else {
+        endTime = new Date('2018-11-11 20:00:00').getTime()
+      }
       let seconds = parseInt((endTime - nowTime) / 1000)
       if (seconds <= 0) {
         return false
@@ -130,6 +133,45 @@ export default {
         }
       }, 1000)
     },
+    getResult () {
+      this.axios.get('/guess/page?pageIndex=1&pageSize=10').then(res => {
+        if (res.code === 0 && res.data && res.data.length) {
+          this.lists = this.createUser(res.data)
+        } else {
+          this.lists = this.createUser()
+        }
+        console.log(this.lists)
+        this.danmu()
+      })
+    },
+    danmu () {
+      const len = this.lists.length - 1
+      window.setInterval(() => {
+        if (this.listIndex > len) {
+          this.listIndex = 0
+        } else {
+          this.listIndex += 1
+        }
+      }, 1000)
+    },
+    createUser (arr = []) {
+      const names = ['莹莹', '幸福妈咪', '玉儿', '逝去的青春', '洪哲', '老温', 'Amiga', 'dove', '二三事', '不负超华', '一味', '仙子', '潘', 'Sunny', '恒', 'P', 'Azzzz', '布丁', 'LL', '暖暖', '朱明', '刘水琴', '一把肥仔', '非理性', '漫漫看', 'A 维扬', '肖百万', '蓉']
+      const randomSort = () => {
+        return Math.random() > 0.5 ? -1 : 1
+      }
+      const users = []
+      for (let index = 0; index < names.length; index++) {
+        users.push({
+          nickname: names[index],
+          headimgurl: '//partyjo.nextdog.cc/niuqi/static/users/t' + (index + 1) + '.jpg'
+        })
+      }
+      for (let index = 0; index < arr.length; index++) {
+        users.unshift(arr[index])
+      }
+      users.sort(randomSort)
+      return users
+    },
     submit () {
       const data = this.guessData
       if (!this.userInfo) {
@@ -142,22 +184,29 @@ export default {
       }
       data.amount = formatPrice(data.amount)
       data.openid = this.userInfo.openid
-      data.headimgrul = this.userInfo.headimgrul
+      data.headimgurl = this.userInfo.headimgurl
       data.nickname = this.userInfo.nickname
       this.axios.post('/guess/add', data).then(res => {
         if (res.code === 0) {
-          cache.set(this.resultKey, res.data)
+          cache.set(this.resultKey, data)
           this.reload()
         } else {
           this.$layer.msg(res.msg)
         }
-      }).catch(() => {
-        cache.set(this.resultKey, data)
-        this.reload()
       })
     },
     reload () {
       window.location.reload()
+    },
+    getGuessResult () {
+      this.axios.get('/guess/get?openid=' + this.userInfo.openid).then(res => {
+        if (res.code === 0) {
+          cache.set(this.resultKey, res.data)
+          this.reload()
+        } else {
+          this.getResult()
+        }
+      })
     }
   },
   created () {
@@ -167,6 +216,8 @@ export default {
     this.resultKey = this.GLOBAL.resultKey
     if (cache.get(this.resultKey)) {
       this.reload()
+    } else {
+      this.getGuessResult()
     }
   }
 }
@@ -486,6 +537,9 @@ export default {
     .submit {
       .wd(560, 100);
       .bg('../assets/btn.png');
+      background-color: transparent;
+      border: none;
+      outline: none;
     }
   }
 
@@ -499,11 +553,7 @@ export default {
       .bg('../assets/logo.png');
     }
 
-    a {
-      display: block;
-      text-align: center;
-      color: #ff9933;
-      font-size: 26px;
+    .zanzhu {
       padding: 20px 0;
     }
 

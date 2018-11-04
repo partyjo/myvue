@@ -7,17 +7,17 @@
     </div>
     <div class="msg">
       <div class="tip">提醒您</div>
-      <div class="tip">您已提交竞猜金额</div>
+      <div class="tip">您已提交成功竞猜金额</div>
       <div class="amount">{{this.result.amount}}亿元</div>
     </div>
     <div class="qr">
       <div>开奖时间</div>
       <div class="time">2018.11.12</div>
       <div>中奖名单公布于 牛气电商公众号</div>
-      <div class="code"></div>
+      <img src="../assets/qr.png" alt="qr" class="code">
       <div>扫码关注 查收中奖结果</div>
     </div>
-    <div class="yx">
+    <div class="yx" :class="isFixed ? 'fx' : 'ab' ">
       <div class="yao">邀请好友竞猜，助你一起赢奖品</div>
     </div>
   </div>
@@ -36,7 +36,8 @@ export default {
     return {
       result: {
         amount: '2000.00'
-      }
+      },
+      isFixed: true
     }
   },
   methods: {
@@ -60,6 +61,14 @@ export default {
       this.result = result
     } else {
       this.getGuessResult()
+    }
+  },
+  mounted () {
+    const h = document.getElementsByClassName('page')[0].offsetHeight
+    const wh = window.screen.availHeight
+    if (h > wh) {
+      console.log(h, wh)
+      this.isFixed = false
     }
   }
 }
@@ -106,7 +115,10 @@ export default {
 
   .page {
     position: relative;
-    height: 1206px;
+    height: 1240px;
+    background-image: url('../assets/bg.png');
+    background-size: 100% auto;
+    background-repeat: repeat-y;
   }
 
   .tm {
@@ -165,11 +177,18 @@ export default {
   }
 
   .yx {
-    position: fixed;
-    left: 0;
-    bottom: 0;
     .wd(750, 252);
     .bg('../assets/yx.png');
+
+    &.fx {
+      position: fixed;
+      left: 0;
+      bottom: 0;
+    }
+
+    &.ab {
+      .ps(0, 1000);
+    }
 
     .yao {
       .pbc(100);

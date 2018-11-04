@@ -17,7 +17,8 @@ Vue.prototype.$layer = layer(Vue, {
 })
 
 const instance = axios.create({
-  baseURL: '/apis',
+  // baseURL: '/apis',
+  baseURL: '/server/niuqi',
   timeout: 1000,
   headers: {
     'X-Custom-Header': 'foobar'
@@ -32,10 +33,10 @@ instance.interceptors.request.use(config => {
 })
 
 instance.interceptors.response.use(res => {
-  if (res.success) {
-    return Promise.resolve(res)
+  if (res.data) {
+    return Promise.resolve(res.data)
   } else {
-    this.$layer.msg(res.msg | '接口异常')
+    this.$layer.msg('接口异常')
   }
 }, err => {
   this.$layer.msg('服务器出错')

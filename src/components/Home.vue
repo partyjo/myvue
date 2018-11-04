@@ -1,9 +1,9 @@
 <template>
   <div class="container">
-    <guess v-if="pageIndex === 0" />
-    <Reuslt v-else-if="pageIndex === 1" />
-    <Login v-else />
-    <!-- <WechatShare /> -->
+    <Login v-if="pageIndex === 0" />
+    <guess v-else-if="pageIndex === 1" />
+    <Reuslt v-else-if="pageIndex === 2" />
+    <WechatShare v-if="isWechatShare === 1" />
   </div>
 </template>
 
@@ -25,15 +25,8 @@ export default {
   },
   data () {
     return {
-      pageIndex: null,
-      msg: 'Welcome to Your Vue.js App'
-    }
-  },
-  methods: {
-    getGuessResult (cb) {
-      this.axios.get('/guess/get?openid=' + this.userInfo.openid).then(res => {
-        cb(res)
-      })
+      pageIndex: 0,
+      isWechatShare: 0
     }
   },
   created () {
@@ -41,19 +34,12 @@ export default {
     this.resultKey = this.GLOBAL.resultKey
     this.userinfo = cache.get(this.loginKey)
     if (this.userinfo) {
+      this.isWechatShare = 1
       const result = cache.get(this.resultKey)
       if (result) {
-        this.pageIndex = 1
+        this.pageIndex = 2
       } else {
-        // this.getGuessResult(res => {
-        //   if (res.code === 0) {
-        //     cache.set(this.resultKey, res.data)
-        //     this.pageIndex = 1
-        //   } else {
-        //     this.pageIndex = 0
-        //   }
-        // })
-        this.pageIndex = 0
+        this.pageIndex = 1
       }
     }
   }

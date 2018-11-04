@@ -14,12 +14,13 @@ export default {
   },
   methods: {
     isLogin () {
-      return cache.get(this.loginKey) !== null
+      return cache.get(this.loginKey)
     },
     login () {
-      this.axios.post('/weixin/isLoginTest', {
+      this.axios.post('/weixin/isLogin', {
         url: window.location.href
       }).then(res => {
+        console.log(res)
         if (res.code === 0) {
           cache.set(this.loginKey, res.data)
           this.reload()
@@ -28,13 +29,6 @@ export default {
         } else {
           this.$layer.msg(res.msg)
         }
-      }).catch(() => {
-        cache.set(this.loginKey, {
-          openid: '123456',
-          nickname: '阿敏',
-          headimgurl: ''
-        })
-        this.reload()
       })
     },
     reload () {
@@ -44,10 +38,10 @@ export default {
   },
   created () {
     this.loginKey = this.GLOBAL.loginKey
-    if (!this.isLogin()) {
-      this.login()
-    } else {
+    if (this.isLogin()) {
       this.reload()
+    } else {
+      this.login()
     }
   }
 }
