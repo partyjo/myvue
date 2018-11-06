@@ -50,19 +50,17 @@
     <div v-if="modalIndex === 0" class="modal modal-rule">
       <div class="title"></div>
       <ul>
-        <li>页面最底部输入你竞猜的2018双11销售额</li>
-        <li>分享此活动到朋友圈，保留至活动结束</li>
-        <li>然后朋友圈截图（请勿设置分组、屏蔽）发送到公众号“牛气电商”后台，ID：labmba</li>
+        <li>中奖结果：11/12公布于公众号牛气电商</li>
+        <li>领取方式：提交竞猜金额后，分享此活动到朋友圈；中奖后凭朋友圈截图，领取奖品</li>
+        <li>评选规则：最接近双11实际成交金额的7位用户；竞猜金额相同者，先猜先得</li>
       </ul>
       <div class="btn" v-on:click="hideModal"></div>
     </div>
     <div v-else-if="modalIndex === 1" class="modal modal-jingcai">
       <div class="title"></div>
       <ul>
-        <li>活动规则的3个动作，缺任意一项视为无效参与</li>
-        <li>竞猜金额精确2位小数，最接近双11成交额的7位参与者中奖（竞猜金额相同者，竞猜时间优先）</li>
-        <li>开奖后，凭公众号后台截图领奖</li>
-        <li>每人仅可竞猜一次；可邀请朋友参与，让他们助你一起竞猜</li>
+        <li>可邀请10位好友为你贡献10个竞猜金额，帮你赢取奖品</li>
+        <li>关注公众号【牛气电商】，第一实际查看竞猜结果</li>
       </ul>
       <div class="btn" v-on:click="hideModal"></div>
     </div>
@@ -145,7 +143,7 @@ export default {
       })
     },
     danmu () {
-      const len = this.lists.length - 1
+      const len = this.lists.length - 2
       window.setInterval(() => {
         if (this.listIndex > len) {
           this.listIndex = 0
@@ -180,6 +178,10 @@ export default {
       }
       if (data.mobile.toString().length !== 11) {
         this.$layer.msg('手机号格式不正确')
+        return false
+      }
+      if (data.amount.toString().length) {
+        this.$layer.msg('竞猜金额没有填写哦')
         return false
       }
       data.amount = formatPrice(data.amount)
@@ -336,6 +338,10 @@ export default {
   .modal-jingcai {
     .title {
       .bg('../assets/gonglve.png')
+    }
+
+    .btn {
+      .ptc(800);
     }
   }
 

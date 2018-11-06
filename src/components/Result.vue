@@ -1,46 +1,58 @@
 <template>
   <div class="page">
-    <div class="tm"></div>
     <div class="logo"></div>
+    <div class="result">
+      <div class="tm"></div>
+      <div class="gx">
+        <div class="gongxi"></div>
+        <div class="tip">您已提交竞猜金额<span class="amount">{{this.result.amount}}</span>亿元</div>
+        <div class="tip">让我们一同见证奇迹！</div>
+      </div>
+    </div>
+    <div class="yaoq">
+      <div class="msg">邀请好友竞猜，额外为你贡献竞猜额</div>
+      <div class="yaoq-btn" v-on:click="showShare"></div>
+    </div>
+    <Helper isHelper=0 :userid="result.openid" />
+    <div class="qr">
+      <div class="title">开奖时间</div>
+      <div class="msg">扫码关注，查收中奖结果</div>
+      <img src="../assets/qr.png" alt="qr" class="code">
+      <div class="time">2018.11.12</div>
+      <div class="msg">中奖名单公布于 牛气电商公众号</div>
+    </div>
     <div class="piaodai">
       <div class="zanzhu"><Zanzhu /></div>
     </div>
-    <div class="msg">
-      <div class="tip">提醒您</div>
-      <div class="tip">您已提交成功竞猜金额</div>
-      <div class="amount">{{this.result.amount}}亿元</div>
-    </div>
-    <div class="qr">
-      <div>开奖时间</div>
-      <div class="time">2018.11.12</div>
-      <div>中奖名单公布于 牛气电商公众号</div>
-      <img src="../assets/qr.png" alt="qr" class="code">
-      <div>扫码关注 查收中奖结果</div>
-    </div>
-    <div class="yx" :class="isFixed ? 'fx' : 'ab' ">
-      <div class="yao">邀请好友竞猜，助你一起赢奖品</div>
-    </div>
+    <div class="yx"></div>
+    <Share v-if="isShowShare" />
   </div>
 </template>
 
 <script>
+import Share from './Share'
 import Zanzhu from './Zanzhu'
+import Helper from './Helper'
 import cache from '../libs/cache'
 
 export default {
   name: 'Result',
   components: {
-    Zanzhu
+    Zanzhu,
+    Share,
+    Helper
   },
   data () {
     return {
-      result: {
-        amount: '2000.00'
-      },
-      isFixed: true
+      result: {},
+      isShowShare: false,
+      users: []
     }
   },
   methods: {
+    showShare () {
+      this.isShowShare = true
+    },
     getGuessResult () {
       this.axios.get('/guess/get?openid=' + this.userInfo.openid).then(res => {
         if (res.code === 0) {
@@ -61,14 +73,6 @@ export default {
       this.result = result
     } else {
       this.getGuessResult()
-    }
-  },
-  mounted () {
-    const h = document.getElementsByClassName('page')[0].offsetHeight
-    const wh = window.screen.availHeight
-    if (h > wh) {
-      console.log(h, wh)
-      this.isFixed = false
     }
   }
 }
@@ -115,91 +119,107 @@ export default {
 
   .page {
     position: relative;
-    height: 1240px;
     background-image: url('../assets/bg.png');
     background-size: 100% auto;
     background-repeat: repeat-y;
   }
-
-  .tm {
-    .ptc(0);
-    .wd(554, 620);
-    .bg('../assets/tm2.png');
-  }
-
   .logo {
     .ps(30, 30);
     .wd(158, 48);
     .bg('../assets/niuqi.png');
   }
 
+  .result {
+    width: 750px;
+    height: 400px;
+    text-align: center;
+    font-size: 48px;
+    font-weight: bold;
+    overflow: hidden;
+
+    .tm {
+      margin: 0 auto;
+      .wd(554, 620);
+      .bg('../assets/tm2.png');
+    }
+
+    .gx {
+      .ps(0, 120);
+      width: 750px;
+    }
+
+    .gongxi {
+      margin: 0 auto;
+      .wd(670 ,118);
+      .bg('../assets/gongxini.png');
+    }
+    .tip {
+      color: #fff;
+      line-height: 1.45;
+    }
+
+    .amount {
+      color: #ffff33;
+    }
+  }
+
+  .yaoq {
+    margin-top: 60px;
+    color: #fff;
+    text-align: center;
+
+    .msg {
+      font-size: 24px;
+    }
+
+    .yaoq-btn {
+      margin: 20px auto 0;
+      .wd(400, 72);
+      .bg('../assets/yaoqing-haoyou.png');
+    }
+  }
+
+  .qr {
+    margin-top: 50px;
+    .wd(750, 388);
+    color: #fff;
+    text-align: center;
+
+    .title {
+      font-size: 36px;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    .msg {
+      font-size: 24px;
+    }
+
+    .code {
+      margin: 20px auto 0;
+      .wd(206, 206);
+      .bg('../assets/qr.png');
+    }
+
+    .time {
+      color: #ffff33;
+    }
+  }
+
   .piaodai {
-    .ptc(100);
+    position: relative;
+    margin: 80px auto 0;
     .wd(674, 286);
     .bg('../assets/piaodai.png');
   }
 
   .zanzhu {
     width: 750px;
-    .pbc(-10);
-  }
-
-  .msg {
-    .ps(0, 400);
-    width: 750px;
-    text-align: center;
-
-    .tip {
-      color: #fff;
-      font-weight: bold;
-      font-size: 60px;
-    }
-
-    .amount {
-      color: #ffff33;
-      font-size: 48px;
-      font-weight: bold;
-    }
-  }
-
-  .qr {
-    .ps(0, 680);
-    .wd(750, 388);
-    color: #fff;
-    font-size: 30px;
-    text-align: center;
-
-    .code {
-      margin: 20px auto;
-      .wd(206, 206);
-      .bg('../assets/qr.png');
-    }
+    .pbc(-20);
   }
 
   .yx {
     .wd(750, 252);
     .bg('../assets/yx.png');
-
-    &.fx {
-      position: fixed;
-      left: 0;
-      bottom: 0;
-    }
-
-    &.ab {
-      .ps(0, 1000);
-    }
-
-    .yao {
-      .pbc(100);
-      .wd(492, 72);
-      line-height: 72px;
-      text-align: center;
-      border: 2px solid #663333;
-      font-size: 24px;
-      color: #663333;
-      border-radius: 36px;
-      background-color: #fff;
-    }
   }
 </style>
