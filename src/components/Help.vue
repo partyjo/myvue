@@ -3,16 +3,6 @@
     <div class="light-bg"></div>
     <div class="light"></div>
     <div class="tm"></div>
-    <div class="lunbo" v-if="lists.length">
-      <div class="scroll">
-        <ul>
-          <li>
-            <span class="headimgurl" v-bind:style="{ 'background-image': 'url(' + list.headimgurl + ')' }"></span>
-            <span class="txt">{{list.nickname}} 1秒前 参与了竞猜</span>
-          </li>
-        </ul>
-      </div>
-    </div>
     <div class="banner">
       <div class="time">活动截止时间{{endTime}}</div>
     </div>
@@ -78,7 +68,7 @@ import cache from '../libs/cache'
 import Zanzhu from './Zanzhu'
 
 export default {
-  name: 'Guess',
+  name: 'Help',
   components: {
     Zanzhu
   },
@@ -90,18 +80,11 @@ export default {
         m: 0,
         s: 0
       },
-      listIndex: 0,
-      lists: [],
       guessData: {
         mobile: '',
         amount: ''
       },
       modalIndex: null
-    }
-  },
-  computed: {
-    list () {
-      return this.lists[this.listIndex]
     }
   },
   methods: {
@@ -110,39 +93,6 @@ export default {
     },
     hideModal () {
       this.modalIndex = null
-    },
-    countDown () {
-      const nowTime = new Date().getTime()
-      let endTime = 0
-      if (isApple) {
-        endTime = new Date('2018-11-11 20:00:00'.replace(/-/g, '/')).getTime()
-      } else {
-        endTime = new Date('2018-11-11 20:00:00').getTime()
-      }
-      let seconds = parseInt((endTime - nowTime) / 1000)
-      if (seconds <= 0) {
-        return false
-      }
-      this.timer = sTohms(seconds)
-      let clock = window.setInterval(() => {
-        if (seconds <= 0) {
-          window.clearInterval(clock)
-        } else {
-          seconds -= 1
-          this.timer = sTohms(seconds)
-        }
-      }, 1000)
-    },
-    getResult () {
-      this.axios.get('/guess/page?pageIndex=1&pageSize=10').then(res => {
-        if (res.code === 0 && res.data && res.data.length) {
-          this.lists = this.createUser(res.data)
-        } else {
-          this.lists = this.createUser()
-        }
-        console.log(this.lists)
-        this.danmu()
-      })
     },
     danmu () {
       const len = this.lists.length - 1
@@ -153,24 +103,6 @@ export default {
           this.listIndex += 1
         }
       }, 2000)
-    },
-    createUser (arr = []) {
-      const names = ['莹莹', '幸福妈咪', '玉儿', '逝去的青春', '洪哲', '老温', 'Amiga', 'dove', '二三事', '不负超华', '一味', '仙子', '潘', 'Sunny', '恒', 'P', 'Azzzz', '布丁', 'LL', '暖暖', '朱明', '刘水琴', '一把肥仔', '非理性', '漫漫看', 'A 维扬', '肖百万', '蓉']
-      const randomSort = () => {
-        return Math.random() > 0.5 ? -1 : 1
-      }
-      const users = []
-      for (let index = 0; index < names.length; index++) {
-        users.push({
-          nickname: names[index],
-          headimgurl: '//partyjo.nextdog.cc/niuqi/static/users/t' + (index + 1) + '.jpg'
-        })
-      }
-      for (let index = 0; index < arr.length; index++) {
-        users.unshift(arr[index])
-      }
-      users.sort(randomSort)
-      return users
     },
     submit () {
       const data = this.guessData
@@ -203,8 +135,6 @@ export default {
         if (res.code === 0) {
           cache.set(this.resultKey, res.data)
           this.reload()
-        } else {
-          this.getResult()
         }
       })
     }

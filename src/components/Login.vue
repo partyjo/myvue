@@ -18,6 +18,7 @@ export default {
     },
     login () {
       this.axios.post('/weixin/isLogin', {
+      // this.axios.post('/weixin/isLoginTest', {
         url: window.location.href
       }).then(res => {
         console.log(res)
