@@ -3,7 +3,7 @@
     <Login v-if="pageIndex === 0" />
     <guess v-else-if="pageIndex === 1" />
     <Reuslt v-else-if="pageIndex === 2" />
-    <WechatShare v-if="isWechatShare !== 0" url="shareUrl" />
+    <WechatShare v-if="isWechatShare !== 0" :url="shareUrl" />
   </div>
 </template>
 
@@ -27,7 +27,7 @@ export default {
     return {
       pageIndex: 0,
       isWechatShare: 0,
-      shareUrl: window.location.href
+      shareUrl: 'http://partyjo.nextdog.cc/niuqi/#/'
     }
   },
   created () {
@@ -39,7 +39,11 @@ export default {
       const result = cache.get(this.resultKey)
       if (result) {
         this.pageIndex = 2
-        this.shareUrl = window.location.href + '/help/' + result.id
+        this.isWechatShare = 0
+        setTimeout(() => {
+          this.shareUrl = 'http://partyjo.nextdog.cc/niuqi/#/' + 'help/' + result.id
+          this.isWechatShare = 1
+        })
       } else {
         this.pageIndex = 1
       }

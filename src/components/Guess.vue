@@ -180,7 +180,7 @@ export default {
         this.$layer.msg('手机号格式不正确')
         return false
       }
-      if (data.amount.toString().length) {
+      if (!data.amount) {
         this.$layer.msg('竞猜金额没有填写哦')
         return false
       }
