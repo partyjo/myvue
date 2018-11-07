@@ -2,37 +2,35 @@
   <div>
     <Login v-if="!isLogin"/>
     <div v-else class="page">
-    <div class="head">
-      <div class="tm"></div>
-      <div class="logo"></div>
-      <div class="user">
-        <div class="headimg" :style="{ 'background-image': 'url('+helperInfo.headimgurl+')'}"></div>
-        <div class="nickname">{{helperInfo.nickname}}</div>
-        <div class="msg">我正在凭实力赢iPhone Xs Max，一起来呀！</div>
-      </div>
-    </div>
-    <div class="banner">
-    </div>
-    <div class="prizes"></div>
-    <div class="guess" v-show="!isHelped">
-      <div class="title"></div>
-      <div class="form">
-        <div class="form-group form-field-amount">
-          <input type="number" name="amount" v-model.number="guessData.amount" placeholder="输入竞猜金额，精确到2位小数">
-          <span>亿元</span>
+      <div class="head">
+        <div class="tm"></div>
+        <div class="logo"></div>
+        <div class="user">
+          <div class="headimg" :style="{ 'background-image': 'url('+helperInfo.headimgurl+')'}"></div>
+          <div class="nickname">{{helperInfo.nickname}}</div>
+          <div class="msg">我正在凭实力赢iPhone Xs Max，一起来呀！</div>
         </div>
-        <button class="submit" v-on:click="submit"></button>
       </div>
+      <div class="banner">
+      </div>
+      <div class="prizes"></div>
+      <div class="guess">
+        <div class="title"></div>
+        <div class="form">
+          <div class="form-group form-field-amount">
+            <input type="number" name="amount" v-model.number="guessData.amount" placeholder="输入竞猜金额，精确到2位小数">
+            <span>亿元</span>
+          </div>
+          <button class="submit" v-on:click="submit"></button>
+        </div>
+      </div>
+      <a class="iwant" href="http://partyjo.nextdog.cc/niuqi/#/"></a>
+      <Helper v-if="isShowHelper" isHelper=1 :userid="helperInfo.openid" />
+      <div class="piaodai">
+        <div class="zanzhu"><Zanzhu /></div>
+      </div>
+      <div class="yx"></div>
     </div>
-    <router-link :to="join" :style="{ display: 'block' }">
-      <div class="iwant"></div>
-    </router-link>
-    <Helper v-if="isShowHelper" isHelper=1 :userid="helperInfo.openid" />
-    <div class="piaodai">
-      <div class="zanzhu"><Zanzhu /></div>
-    </div>
-    <div class="yx"></div>
-  </div>
   </div>
 </template>
 
@@ -57,8 +55,6 @@ export default {
         amount: ''
       },
       isShowHelper: false,
-      join: '/',
-      isHelped: false,
       isLogin: false
     }
   },
@@ -68,9 +64,12 @@ export default {
       console.log(id)
       this.axios.get('/guess/get?id=' + id).then(res => {
         if (res.code === 0) {
-          console.log(res.data)
-          this.helperInfo = res.data
-          this.isShowHelper = true
+          if (res.data.openid === this.userInfo.openid) {
+            window.location.href = 'http://partyjo.nextdog.cc/#/'
+          } else {
+            this.helperInfo = res.data
+            this.isShowHelper = true
+          }
         } else {
           this.$layer.msg('当前页面出错了')
         }
@@ -98,7 +97,6 @@ export default {
       this.axios.post('/help/add', data).then(res => {
         if (res.code === 0) {
           cache.set(this.helpKey, res.data)
-          this.isHelped = true
           this.isShowHelper = false
           setTimeout(() => {
             this.isShowHelper = true
@@ -126,9 +124,6 @@ export default {
     if (this.userInfo) {
       this.isLogin = true
       this.gethelper()
-    }
-    if (cache.get(this.helpKey)) {
-      this.isHelped = true
     }
   }
 }
@@ -173,85 +168,9 @@ export default {
     top: @t * 1px;
   }
 
-  .modal {
-    .px(0, 0);
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.38);
-    .bg('../assets/modal-bg.png');
-
-    .btn {
-      margin: 0 auto;
-      .wd(370, 90);
-      .bg('../assets/iknow.png');
-    }
-
-    .title {
-      .wd(310, 80);
-      margin: 300px auto 40px;
-      .bg('../assets/rule.png');
-    }
-
-    ul {
-      list-style: none;
-      padding: 10px 100px;
-      margin: 0;
-    }
-
-    li {
-      position: relative;
-      padding-left: 60px;
-      margin-bottom: 20px;
-      color: #fff;
-      font-size: 30px;
-      line-height: 1.65;
-      background-image: url('../assets/num-bg.png');
-      background-repeat: no-repeat;
-      background-size: 59px 54px;
-      min-height: 60px;
-
-      &::before {
-        .ps(5, 5);
-        display: block;
-        .wd(56, 56);
-        text-align: center;
-        color: #663333;
-      }
-
-      &:nth-child(1) {
-        &::before {
-          content: '1';
-        }
-      }
-
-      &:nth-child(2) {
-        &::before {
-          content: '2';
-        }
-      }
-
-      &:nth-child(3) {
-        &::before {
-          content: '3';
-        }
-      }
-
-      &:nth-child(4) {
-        &::before {
-          content: '4';
-        }
-      }
-    }
-  }
-
-  .modal-jingcai {
-    .title {
-      .bg('../assets/gonglve.png')
-    }
-  }
-
   .page {
     position: relative;
+    width: 750px;
     background-color: #f2f2f2;
     background-image: url('../assets/bg.png');
     background-size: 100% auto;
@@ -376,6 +295,7 @@ export default {
   }
 
   .iwant {
+    display: block;
     margin: 40px auto;
     .wd(560, 100);
     .bg('../assets/woyeyao.png');

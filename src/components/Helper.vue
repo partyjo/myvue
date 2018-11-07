@@ -117,6 +117,7 @@ export default {
 
     .nickname {
       .ps(140, 20);
+      width: 140px;
       overflow: hidden;
     }
 

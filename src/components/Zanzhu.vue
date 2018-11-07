@@ -1,5 +1,5 @@
 <template>
-  <a href="http://m.baidu.com" class="zanzhu">{{name}}</a>
+  <a href="https://activity.xiaoyatong.com" class="zanzhu">{{name}}</a>
 </template>
 
 <script>

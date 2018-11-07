@@ -20,5 +20,6 @@ export default {
     background-image: url('../assets/share-tip.png');
     background-repeat: no-repeat;
     background-size: 100% auto;
+    background-position: 0 -100px;
   }
 </style>

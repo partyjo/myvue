@@ -60,7 +60,7 @@
       <div class="title"></div>
       <ul>
         <li>可邀请10位好友为你贡献10个竞猜金额，帮你赢取奖品</li>
-        <li>关注公众号【牛气电商】，第一实际查看竞猜结果</li>
+        <li>关注公众号【牛气电商】，第一时间查看竞猜结果</li>
       </ul>
       <div class="btn" v-on:click="hideModal"></div>
     </div>

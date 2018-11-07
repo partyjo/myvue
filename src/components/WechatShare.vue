@@ -11,8 +11,8 @@ export default {
   data () {
     return {
       shareData: {
-        title: '竞猜双11成交额，赢iPhone Xs Max 万元奖品',
-        desc: '这个活动很有趣，快来跟我一起参加！',
+        title: '凭实力预测双11成交额，赢iPhone Xs Max万元大奖',
+        desc: '快来和我一起竞猜赢奖品吧！',
         link: this.url,
         imgUrl: 'http://partyjo.nextdog.cc/niuqi/static/img/max.jpeg'
       }
