@@ -3,7 +3,7 @@
     <div class="num">{{msg}}</div>
     <ul>
       <li v-for="item in users" :key="item.openid">
-        <span class="headimg"></span>
+        <span class="headimg" :style="{ 'background-image': 'url('+item.headimgurl+')'}"></span>
         <span class="nickname">{{item.nickname}}</span>
         <span class="amount">竞猜{{item.amount}}亿元</span>
       </li>
@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import cache from '../libs/cache'
+// import cache from '../libs/cache'
 
 export default {
   name: 'Helper',
@@ -35,6 +35,9 @@ export default {
         }
       })
     }
+  },
+  mounted () {
+    this.getHelper()
   }
 }
 </script>
@@ -108,6 +111,8 @@ export default {
       .wd(64, 64);
       margin-right: 36px;
       background-color: #fff;
+      background-size: cover;
+      background-repeat: no-repeat;
     }
 
     .nickname {

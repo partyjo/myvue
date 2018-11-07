@@ -1,5 +1,5 @@
 const formatPrice = (price) => {
-  return Math.floor(price * 100) / 100
+  return price.toFixed(2)
 }
 
 export {

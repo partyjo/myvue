@@ -19,7 +19,7 @@ export default new Router({
       component: Clear
     },
     {
-      path: '/help',
+      path: '/help/:id',
       name: 'Help',
       component: Help
     }

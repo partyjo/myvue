@@ -7,12 +7,13 @@ import wx from 'weixin-js-sdk'
 
 export default {
   name: 'WehatShare',
+  props: ['url'],
   data () {
     return {
       shareData: {
         title: '竞猜双11成交额，赢iPhone Xs Max 万元奖品',
         desc: '这个活动很有趣，快来跟我一起参加！',
-        link: window.location.href + 'help',
+        link: this.url,
         imgUrl: 'http://partyjo.nextdog.cc/niuqi/static/img/max.jpeg'
       }
     }

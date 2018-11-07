@@ -17,8 +17,8 @@ export default {
       return cache.get(this.loginKey)
     },
     login () {
-      // this.axios.post('/weixin/isLogin', {
-      this.axios.post('/weixin/isLoginTest', {
+      this.axios.post('/weixin/isLogin', {
+      // this.axios.post('/weixin/isLoginTest', {
         url: window.location.href
       }).then(res => {
         console.log(res)

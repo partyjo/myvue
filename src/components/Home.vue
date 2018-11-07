@@ -3,7 +3,7 @@
     <Login v-if="pageIndex === 0" />
     <guess v-else-if="pageIndex === 1" />
     <Reuslt v-else-if="pageIndex === 2" />
-    <WechatShare v-if="isWechatShare === 1" />
+    <WechatShare v-if="isWechatShare !== 0" url="shareUrl" />
   </div>
 </template>
 
@@ -26,7 +26,8 @@ export default {
   data () {
     return {
       pageIndex: 0,
-      isWechatShare: 0
+      isWechatShare: 0,
+      shareUrl: window.location.href
     }
   },
   created () {
@@ -38,6 +39,7 @@ export default {
       const result = cache.get(this.resultKey)
       if (result) {
         this.pageIndex = 2
+        this.shareUrl = window.location.href + '/help/' + result.id
       } else {
         this.pageIndex = 1
       }

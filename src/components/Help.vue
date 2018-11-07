@@ -1,5 +1,7 @@
 <template>
-  <div class="page">
+  <div>
+    <Login v-if="!isLogin"/>
+    <div v-else class="page">
     <div class="head">
       <div class="tm"></div>
       <div class="logo"></div>
@@ -12,7 +14,7 @@
     <div class="banner">
     </div>
     <div class="prizes"></div>
-    <div class="guess">
+    <div class="guess" v-show="!isHelped">
       <div class="title"></div>
       <div class="form">
         <div class="form-group form-field-amount">
@@ -25,11 +27,12 @@
     <router-link :to="join" :style="{ display: 'block' }">
       <div class="iwant"></div>
     </router-link>
-    <Helper isHelper=1 :userid="helperInfo.openid" />
+    <Helper v-if="isShowHelper" isHelper=1 :userid="helperInfo.openid" />
     <div class="piaodai">
       <div class="zanzhu"><Zanzhu /></div>
     </div>
     <div class="yx"></div>
+  </div>
   </div>
 </template>
 
@@ -38,49 +41,70 @@ import { formatPrice } from '../libs/math'
 import cache from '../libs/cache'
 import Zanzhu from './Zanzhu'
 import Helper from './Helper'
+import Login from './Login'
 
 export default {
   name: 'Help',
   components: {
     Zanzhu,
-    Helper
+    Helper,
+    Login
   },
   data () {
     return {
-      helperInfo: {
-        openid: '123',
-        nickname: 'amin',
-        headimgurl: ''
-      },
+      helperInfo: {},
       guessData: {
-        mobile: '',
         amount: ''
       },
-      join: '/'
+      isShowHelper: false,
+      join: '/',
+      isHelped: false,
+      isLogin: false
     }
   },
   methods: {
+    gethelper () {
+      const id = this.$route.params.id
+      console.log(id)
+      this.axios.get('/guess/get?id=' + id).then(res => {
+        if (res.code === 0) {
+          console.log(res.data)
+          this.helperInfo = res.data
+          this.isShowHelper = true
+        } else {
+          this.$layer.msg('当前页面出错了')
+        }
+      })
+    },
     submit () {
       const data = this.guessData
       if (!this.userInfo) {
         this.$layer.msg('您还没有登陆')
         return false
       }
-      if (data.amount.toString().length) {
+      if (!data.amount) {
         this.$layer.msg('竞猜金额没有填写哦')
+        return false
+      }
+      if (this.helperInfo.openid === this.userInfo.openid) {
+        this.$layer.msg('自己不能帮自己噢')
         return false
       }
       data.amount = formatPrice(data.amount)
       data.openid = this.userInfo.openid
       data.headimgurl = this.userInfo.headimgurl
       data.nickname = this.userInfo.nickname
-      this.axios.post('/guess/add', data).then(res => {
+      data.userid = this.helperInfo.openid
+      this.axios.post('/help/add', data).then(res => {
         if (res.code === 0) {
-          cache.set(this.resultKey, data)
-          this.reload()
-        } else {
-          this.$layer.msg(res.msg)
+          cache.set(this.helpKey, res.data)
+          this.isHelped = true
+          this.isShowHelper = false
+          setTimeout(() => {
+            this.isShowHelper = true
+          }, 300)
         }
+        this.$layer.msg(res.msg)
       })
     },
     reload () {
@@ -97,12 +121,14 @@ export default {
   },
   created () {
     this.loginKey = this.GLOBAL.loginKey
+    this.helpKey = this.GLOBAL.helpKey
     this.userInfo = cache.get(this.loginKey)
-    this.resultKey = this.GLOBAL.resultKey
-    if (cache.get(this.resultKey)) {
-      // this.reload()
-    } else {
-      this.getGuessResult()
+    if (this.userInfo) {
+      this.isLogin = true
+      this.gethelper()
+    }
+    if (cache.get(this.helpKey)) {
+      this.isHelped = true
     }
   }
 }
