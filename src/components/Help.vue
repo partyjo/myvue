@@ -2,6 +2,7 @@
   <div>
     <Login v-if="!isLogin"/>
     <div v-else class="page">
+      <WechatShare :url="shareUrl" />
       <div class="head">
         <div class="tm"></div>
         <div class="logo"></div>
@@ -40,13 +41,15 @@ import cache from '../libs/cache'
 import Zanzhu from './Zanzhu'
 import Helper from './Helper'
 import Login from './Login'
+import WechatShare from './WechatShare'
 
 export default {
   name: 'Help',
   components: {
     Zanzhu,
     Helper,
-    Login
+    Login,
+    WechatShare
   },
   data () {
     return {
@@ -55,7 +58,8 @@ export default {
         amount: ''
       },
       isShowHelper: false,
-      isLogin: false
+      isLogin: false,
+      shareUrl: 'http://partyjo.nextdog.cc/niuqi/#/help/' + this.$route.params.id
     }
   },
   methods: {
@@ -65,7 +69,7 @@ export default {
       this.axios.get('/guess/get?id=' + id).then(res => {
         if (res.code === 0) {
           if (res.data.openid === this.userInfo.openid) {
-            window.location.href = 'http://partyjo.nextdog.cc/#/'
+            window.location.href = 'http://partyjo.nextdog.cc/niuqi/#/'
           } else {
             this.helperInfo = res.data
             this.isShowHelper = true
@@ -103,17 +107,6 @@ export default {
           }, 300)
         }
         this.$layer.msg(res.msg)
-      })
-    },
-    reload () {
-      window.location.reload()
-    },
-    getGuessResult () {
-      this.axios.get('/guess/get?openid=' + this.userInfo.openid).then(res => {
-        if (res.code === 0) {
-          cache.set(this.resultKey, res.data)
-          this.reload()
-        }
       })
     }
   },

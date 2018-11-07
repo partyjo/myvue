@@ -20,8 +20,9 @@ export default {
     }
   },
   created () {
-    cache.set(this.GLOBAL.loginKey, '')
-    cache.set(this.GLOBAL.resultKey, '')
+    cache.remove(this.GLOBAL.loginKey)
+    cache.remove(this.GLOBAL.resultKey)
+    cache.remove(this.GLOBAL.helpKey)
     this.clearOauth()
   }
 }

@@ -119,10 +119,12 @@ export default {
       .ps(140, 20);
       width: 140px;
       overflow: hidden;
+      white-space: nowrap;
     }
 
     .amount {
       .ps(300, 20);
+      white-space: nowrap;
     }
   }
 </style>

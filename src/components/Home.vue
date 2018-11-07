@@ -44,8 +44,6 @@ export default {
         this.isWechatShare = true
         this.pageIndex = 1
       }
-    } else {
-      this.isWechatShare = true
     }
   }
 }
