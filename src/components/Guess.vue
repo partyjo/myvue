@@ -190,7 +190,7 @@ export default {
       data.nickname = this.userInfo.nickname
       this.axios.post('/guess/add', data).then(res => {
         if (res.code === 0) {
-          cache.set(this.resultKey, data)
+          cache.set(this.resultKey, res.data)
           this.reload()
         } else {
           this.$layer.msg(res.msg)

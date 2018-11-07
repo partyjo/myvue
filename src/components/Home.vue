@@ -35,16 +35,13 @@ export default {
     this.resultKey = this.GLOBAL.resultKey
     this.userinfo = cache.get(this.loginKey)
     if (this.userinfo) {
-      this.isWechatShare = 1
       const result = cache.get(this.resultKey)
       if (result) {
         this.pageIndex = 2
-        this.isWechatShare = 0
-        setTimeout(() => {
-          this.shareUrl = 'http://partyjo.nextdog.cc/niuqi/#/' + 'help/' + result.id
-          this.isWechatShare = 1
-        })
+        this.shareUrl = 'http://partyjo.nextdog.cc/niuqi/#/' + 'help/' + result.id
+        this.isWechatShare = 1
       } else {
+        this.isWechatShare = 1
         this.pageIndex = 1
       }
     }
