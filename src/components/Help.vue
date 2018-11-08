@@ -15,6 +15,7 @@
       <div class="banner">
       </div>
       <div class="prizes"></div>
+      <div class="cankao"></div>
       <div class="guess">
         <div class="title"></div>
         <div class="form">
@@ -208,6 +209,12 @@ export default {
     .msg {
        .ps(120, 100);
     }
+  }
+
+  .cankao {
+    .ptc(2600);
+    .wd(674, 1084);
+    .bg('../assets/cankao.png');
   }
 
   .banner {
