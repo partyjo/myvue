@@ -49,9 +49,9 @@ export default {
               'onMenuShareAppMessage'
             ] // 必填，需要使用的JS接口列表
           })
-          wx.ready(() => {
-            this.share(this.shareData)
-          })
+          // wx.ready(() => {
+          //   this.share(this.shareData)
+          // })
         } else {
           this.$layer.msg('微信设置分享失败')
         }
