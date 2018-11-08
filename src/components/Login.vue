@@ -7,9 +7,11 @@ import cache from '../libs/cache'
 
 export default {
   name: 'Login',
+  props: ['url'],
   data () {
     return {
-      msg: '登陆中...'
+      msg: '登陆中...',
+      targetUrl: this.url ? this.url : window.location.href
     }
   },
   methods: {
@@ -19,9 +21,8 @@ export default {
     login () {
       this.axios.post('/weixin/isLogin', {
       // this.axios.post('/weixin/isLoginTest', {
-        url: window.location.href
+        url: this.targetUrl
       }).then(res => {
-        console.log(res)
         if (res.code === 0) {
           cache.set(this.loginKey, res.data)
           this.reload()
@@ -37,7 +38,7 @@ export default {
       window.location.reload()
     }
   },
-  created () {
+  mounted () {
     this.loginKey = this.GLOBAL.loginKey
     if (this.isLogin()) {
       this.reload()

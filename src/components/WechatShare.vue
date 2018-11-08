@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import wx from 'weixin-js-sdk'
+// import wx from 'weixin-js-sdk'
 
 export default {
   name: 'WehatShare',
@@ -34,9 +34,16 @@ export default {
             jsApiList: [
               'updateAppMessageShareData',
               'updateTimelineShareData',
-              'onMenuShareWeibo'
+              'onMenuShareWeibo',
+              'onMenuShareTimeline',
+              'onMenuShareAppMessage'
             ] // 必填，需要使用的JS接口列表
           })
+          wx.ready(() => {
+            this.share(this.shareData)
+          })
+        } else {
+          this.$layer.msg('微信设置分享失败')
         }
       })
     },
@@ -54,6 +61,17 @@ export default {
         link: data.link, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
         imgUrl: data.imgUrl // 分享图标
       })
+      wx.onMenuShareTimeline({
+        title: data.title, // 分享标题
+        link: data.link, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+        imgUrl: data.imgUrl // 分享图标
+      })
+      wx.onMenuShareAppMessage({
+        title: data.title, // 分享标题
+        desc: data.desc, // 分享描述
+        link: data.link, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+        imgUrl: data.imgUrl // 分享图标
+      })
       // 获取“分享到腾讯微博”按钮点击状态及自定义分享内容接口
       wx.onMenuShareWeibo({
         title: data.title, // 分享标题
@@ -63,11 +81,8 @@ export default {
       })
     }
   },
-  created () {
+  mounted () {
     this.wxConfig()
-    wx.ready(() => {
-      this.share(this.shareData)
-    })
   }
 }
 </script>

@@ -1,7 +1,7 @@
 const config = {
-  loginKey: 'loginKey3',
-  resultKey: 'resultKey3',
-  helpKey: 'helpKey3'
+  loginKey: 'loginKey6',
+  resultKey: 'resultKey6',
+  helpKey: 'helpKey6'
 }
 
 export default config

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Login v-if="!isLogin"/>
+    <Login v-if="!isLogin" :url="shareUrl"/>
     <div v-else class="page">
       <WechatShare :url="shareUrl" />
       <div class="head">
@@ -113,7 +113,6 @@ export default {
   },
   created () {
     this.loginKey = this.GLOBAL.loginKey
-    this.helpKey = this.GLOBAL.helpKey
     this.userInfo = cache.get(this.loginKey)
     if (this.userInfo) {
       this.isLogin = true
@@ -212,7 +211,7 @@ export default {
   }
 
   .cankao {
-    .ptc(2600);
+    margin: 30px auto 0;
     .wd(674, 1084);
     .bg('../assets/cankao.png');
   }
