@@ -9,12 +9,10 @@
 
 <script>
 import cache from '../libs/cache'
-
 import WechatShare from './WechatShare'
 import Guess from './Guess'
 import Reuslt from './Result'
 // import Login from './Login'
-
 export default {
   name: 'Home',
   components: {
@@ -63,7 +61,6 @@ export default {
         }
       })
     }
-    
   }
 }
 </script>
@@ -72,10 +69,5 @@ export default {
 <style scoped lang='less'>
   .container {
     height: 1000px;
-  }
-
-  .login {
-    text-align: center;
-    font-size: 20px;
   }
 </style>

@@ -71,7 +71,7 @@ export default {
     const result = cache.get(this.resultKey)
     if (result) {
       this.result = result
-    } else {     
+    } else {
       this.getGuessResult()
     }
   }

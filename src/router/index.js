@@ -4,6 +4,7 @@ import Home from '@/components/Home'
 import Clear from '@/components/Clear'
 import Help from '@/components/Help'
 import Test from '@/components/Test'
+import Result from '@/components/Result'
 
 Vue.use(Router)
 
@@ -23,6 +24,11 @@ export default new Router({
       path: '/help/:id',
       name: 'Help',
       component: Help
+    },
+    {
+      path: '/result',
+      name: 'Result',
+      component: Result
     },
     {
       path: '/test',
