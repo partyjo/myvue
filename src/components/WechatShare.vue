@@ -7,7 +7,24 @@
 
 export default {
   name: 'WehatShare',
-  props: ['url'],
+  props: {
+    url: {
+      type: String,
+      default: 'http://partyjo.nextdog.cc/niuqi/'
+    }
+  },
+  computed: {
+    link () {
+      // const shareData = {
+      //   title: '凭实力预测双11成交额，赢iPhone Xs Max万元大奖',
+      //   desc: '快来和我一起竞猜赢奖品吧！',
+      //   link: this.url,
+      //   imgUrl: 'http://partyjo.nextdog.cc/niuqi/static/img/max.jpeg'
+      // }
+      // this.share(shareData)
+      // return this.url
+    }
+  },
   data () {
     return {
       shareData: {
