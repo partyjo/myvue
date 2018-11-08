@@ -10,8 +10,7 @@ export default {
   props: ['url'],
   data () {
     return {
-      msg: '登陆中...',
-      targetUrl: this.url ? this.url : window.location.href
+      msg: '登陆中...'
     }
   },
   methods: {
@@ -19,9 +18,9 @@ export default {
       return cache.get(this.loginKey)
     },
     login () {
-      this.axios.post('/weixin/isLogin', {
-      // this.axios.post('/weixin/isLoginTest', {
-        url: this.targetUrl
+      // this.axios.post('/weixin/isLogin', {
+      this.axios.post('/weixin/isLoginTest', {
+        url: window.location.href
       }).then(res => {
         if (res.code === 0) {
           cache.set(this.loginKey, res.data)
@@ -38,11 +37,9 @@ export default {
       window.location.reload()
     }
   },
-  mounted () {
+  created () {
     this.loginKey = this.GLOBAL.loginKey
-    if (this.isLogin()) {
-      this.reload()
-    } else {
+    if (!this.isLogin()) {
       this.login()
     }
   }

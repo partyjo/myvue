@@ -1,5 +1,6 @@
 <template>
   <div class="container">
+    <Login />
     <div v-if="pageIndex === 0"></div>
     <guess v-else-if="pageIndex === 1" />
     <Reuslt v-else-if="pageIndex === 2" />
@@ -13,14 +14,14 @@ import cache from '../libs/cache'
 import WechatShare from './WechatShare'
 import Guess from './Guess'
 import Reuslt from './Result'
-// import Login from './Login'
+import Login from './Login'
 
 export default {
   name: 'Home',
   components: {
     Guess,
     Reuslt,
-    // Login,
+    Login,
     WechatShare
   },
   data () {
@@ -48,22 +49,7 @@ export default {
     this.resultKey = this.GLOBAL.resultKey
     if (this.isLogin()) {
       this.show()
-    } else {
-      this.axios.post('/weixin/isLogin', {
-        // this.axios.post('/weixin/isLoginTest', {
-        url: window.location.href
-      }).then(res => {
-        if (res.code === 0) {
-          cache.set(this.loginKey, res.data)
-          this.show()
-        } else if (res.code === 9999) {
-          window.location.href = res.data
-        } else {
-          this.$layer.msg(res.msg)
-        }
-      })
     }
-    
   }
 }
 </script>

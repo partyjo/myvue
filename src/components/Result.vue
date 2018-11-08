@@ -25,7 +25,7 @@
       <div class="zanzhu"><Zanzhu /></div>
     </div>
     <div class="yx"></div>
-    <Share v-if="isShowShare" />
+    <Share :show.sync="isShowShare" />
   </div>
 </template>
 
@@ -71,7 +71,7 @@ export default {
     const result = cache.get(this.resultKey)
     if (result) {
       this.result = result
-    } else {     
+    } else {
       this.getGuessResult()
     }
   }

@@ -17,7 +17,6 @@ Vue.prototype.$layer = layer(Vue, {
 })
 
 const instance = axios.create({
-  // baseURL: '/apis',
   baseURL: '/server/niuqi',
   timeout: 1000,
   headers: {
