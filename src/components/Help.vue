@@ -1,7 +1,7 @@
 <template>
   <div>
-    <Login v-if="!isLogin" :url="shareUrl"/>
-    <div v-else class="page">
+    <Login />
+    <div class="page">
       <WechatShare :url="shareUrl" />
       <div class="head">
         <div class="tm"></div>
@@ -59,7 +59,6 @@ export default {
         amount: ''
       },
       isShowHelper: false,
-      isLogin: false,
       shareUrl: 'http://partyjo.nextdog.cc/niuqi/#/help/' + this.$route.params.id
     }
   },
@@ -70,7 +69,7 @@ export default {
       this.axios.get('/guess/get?id=' + id).then(res => {
         if (res.code === 0) {
           if (res.data.openid === this.userInfo.openid) {
-            window.location.href = 'http://partyjo.nextdog.cc/niuqi/#/'
+            window.location.href = 'http://partyjo.nextdog.cc/niuqi/#/result'
           } else {
             this.helperInfo = res.data
             this.isShowHelper = true
@@ -111,11 +110,10 @@ export default {
       })
     }
   },
-  created () {
+  mounted () {
     this.loginKey = this.GLOBAL.loginKey
     this.userInfo = cache.get(this.loginKey)
     if (this.userInfo) {
-      this.isLogin = true
       this.gethelper()
     }
   }

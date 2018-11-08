@@ -1,5 +1,7 @@
 <template>
   <div class="page">
+    <Login />
+    <WechatShare v-if="isWxShare" :url="shareUrl" />
     <div class="logo"></div>
     <div class="result">
       <div class="tm"></div>
@@ -30,6 +32,8 @@
 </template>
 
 <script>
+import WechatShare from './WechatShare'
+import Login from './Login'
 import Share from './Share'
 import Zanzhu from './Zanzhu'
 import Helper from './Helper'
@@ -40,16 +44,23 @@ export default {
   components: {
     Zanzhu,
     Share,
-    Helper
+    Helper,
+    WechatShare,
+    Login
   },
   data () {
     return {
       result: {},
       isShowShare: false,
-      users: []
+      shareUrl: '',
+      isWxShare: false
     }
   },
   methods: {
+    setWxShare () {
+      this.shareUrl = 'http://partyjo.nextdog.cc/niuqi/#/' + 'help/' + this.result.id
+      this.isWxShare = true
+    },
     showShare () {
       this.isShowShare = true
     },
@@ -58,21 +69,31 @@ export default {
         if (res.code === 0) {
           cache.set(this.resultKey, res.data)
           this.result = res.data
+          this.setWxShare()
+          setTimeout(() => {
+            window.scrollTo(0, 0)
+          }, 300)
         } else {
           this.$layer.msg(res.msg)
         }
       })
     }
   },
-  created () {
+  mounted () {
     this.loginKey = this.GLOBAL.loginKey
     this.resultKey = this.GLOBAL.resultKey
     this.userInfo = cache.get(this.loginKey)
-    const result = cache.get(this.resultKey)
-    if (result) {
-      this.result = result
-    } else {
-      this.getGuessResult()
+    if (this.userInfo) {
+      const result = cache.get(this.resultKey)
+      if (result) {
+        this.result = result
+        setTimeout(() => {
+          window.scrollTo(0, 0)
+        }, 300)
+        this.setWxShare()
+      } else {
+        this.getGuessResult()
+      }
     }
   }
 }

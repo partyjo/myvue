@@ -1,9 +1,8 @@
 <template>
   <div class="container">
     <Login />
-    <div v-if="pageIndex === 0"></div>
-    <guess v-else-if="pageIndex === 1" />
-    <Reuslt v-else-if="pageIndex === 2" />
+    <div v-if="pageIndex === 0" class="tm">登陆失败<br>刷新一下哟</div>
+    <guess v-else />
     <WechatShare :url="shareUrl" />
   </div>
 </template>
@@ -37,8 +36,8 @@ export default {
     show () {
       const result = cache.get(this.resultKey)
       if (result) {
-        this.pageIndex = 2
-        this.shareUrl = 'http://partyjo.nextdog.cc/niuqi/#/' + 'help/' + result.id
+        // window.location.href = '/#/result'
+        window.location.href = 'http://partyjo.nextdog.cc/niuqi/#/result'
       } else {
         this.pageIndex = 1
       }
@@ -60,8 +59,9 @@ export default {
     height: 1000px;
   }
 
-  .login {
+  .tm {
     text-align: center;
-    font-size: 20px;
+    color: #fff;
+    font-size: 24px;
   }
 </style>

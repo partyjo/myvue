@@ -1,5 +1,5 @@
 <template>
-  <div class="login">{{msg}}</div>
+  <div class="login"></div>
 </template>
 
 <script>
@@ -7,19 +7,16 @@ import cache from '../libs/cache'
 
 export default {
   name: 'Login',
-  props: ['url'],
   data () {
-    return {
-      msg: '登陆中...'
-    }
+    return {}
   },
   methods: {
     isLogin () {
       return cache.get(this.loginKey)
     },
     login () {
-      // this.axios.post('/weixin/isLogin', {
-      this.axios.post('/weixin/isLoginTest', {
+      this.axios.post('/weixin/isLogin', {
+      // this.axios.post('/weixin/isLoginTest', {
         url: window.location.href
       }).then(res => {
         if (res.code === 0) {
@@ -33,7 +30,6 @@ export default {
       })
     },
     reload () {
-      this.msg = '登陆成功，跳转中...'
       window.location.reload()
     }
   },
@@ -45,13 +41,3 @@ export default {
   }
 }
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped lang='less'>
-  .login {
-    padding: 40px;
-    text-align: center;
-    color: #fff;
-    font-size: 30px;
-  }
-</style>

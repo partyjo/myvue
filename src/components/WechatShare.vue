@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import wx from 'weixin-js-sdk'
+// import wx from 'weixin-js-sdk'
 
 export default {
   name: 'WehatShare',
@@ -15,20 +15,16 @@ export default {
   },
   computed: {
     link () {
-      const shareData = {
-        title: '凭实力预测双11成交额，赢iPhone Xs Max万元大奖',
-        desc: '快来和我一起竞猜赢奖品吧！',
-        link: this.url,
-        imgUrl: 'http://partyjo.nextdog.cc/niuqi/static/img/max.jpeg'
+      if (!this.isFirst) {
+        this.share()
       }
-      wx.ready(() => {
-        this.share(shareData)
-      })
       return this.url
     }
   },
   data () {
-    return {}
+    return {
+      isFirst: true
+    }
   },
   methods: {
     wxConfig () {
@@ -51,12 +47,24 @@ export default {
               'onMenuShareAppMessage'
             ] // 必填，需要使用的JS接口列表
           })
+          wx.ready(() => {
+            this.share()
+          })
+          wx.error(() => {
+            this.$layer.msg('微信设置分享失败')
+          })
         } else {
           this.$layer.msg('微信设置分享失败')
         }
       })
     },
-    share (data) {
+    share () {
+      const data = {
+        title: '凭实力预测双11成交额，赢iPhone Xs Max万元大奖',
+        desc: '快来和我一起竞猜赢奖品吧！',
+        link: this.url,
+        imgUrl: 'http://partyjo.nextdog.cc/niuqi/static/img/max.jpeg'
+      }
       // 自定义“分享给朋友”及“分享到QQ”按钮的分享内容
       wx.updateAppMessageShareData({
         title: data.title, // 分享标题
@@ -89,6 +97,10 @@ export default {
         imgUrl: data.imgUrl // 分享图标
       })
     }
+  },
+  created () {
+    this.isFirst = false
+    this.wxConfig()
   }
 }
 </script>
