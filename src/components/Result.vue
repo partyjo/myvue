@@ -1,39 +1,40 @@
 <template>
   <div class="page">
-    <Login />
-    <WechatShare v-if="isWxShare" :url="shareUrl" />
-    <div class="logo"></div>
-    <div class="result">
-      <div class="tm"></div>
-      <div class="gx">
-        <div class="gongxi"></div>
-        <div class="tip">您已提交竞猜金额<span class="amount">{{this.result.amount}}</span>亿元</div>
-        <div class="tip">让我们一同见证奇迹！</div>
+    <div v-if="pageIndex === 0" class="tx-c">登陆中...</div>
+    <div v-else>
+      <WechatShare v-if="isWxShare" :url="shareUrl" />
+      <div class="logo"></div>
+      <div class="result">
+        <div class="tm"></div>
+        <div class="gx">
+          <div class="gongxi"></div>
+          <div class="tip">您已提交竞猜金额<span class="amount">{{this.result.amount}}</span>亿元</div>
+          <div class="tip">让我们一同见证奇迹！</div>
+        </div>
       </div>
+      <div class="yaoq">
+        <div class="msg">邀请好友竞猜，额外为你贡献竞猜额</div>
+        <div class="yaoq-btn" v-on:click="showShare"></div>
+      </div>
+      <Helper isHelper=0 :userid="result.openid" />
+      <div class="qr">
+        <div class="title">开奖时间</div>
+        <div class="msg">扫码关注，查收中奖结果</div>
+        <img src="../assets/qr.png" alt="qr" class="code">
+        <div class="time">2018.11.12</div>
+        <div class="msg">中奖名单公布于 牛气电商公众号</div>
+      </div>
+      <div class="piaodai">
+        <div class="zanzhu"><Zanzhu /></div>
+      </div>
+      <div class="yx"></div>
+      <Share :show.sync="isShowShare" />
     </div>
-    <div class="yaoq">
-      <div class="msg">邀请好友竞猜，额外为你贡献竞猜额</div>
-      <div class="yaoq-btn" v-on:click="showShare"></div>
-    </div>
-    <Helper isHelper=0 :userid="result.openid" />
-    <div class="qr">
-      <div class="title">开奖时间</div>
-      <div class="msg">扫码关注，查收中奖结果</div>
-      <img src="../assets/qr.png" alt="qr" class="code">
-      <div class="time">2018.11.12</div>
-      <div class="msg">中奖名单公布于 牛气电商公众号</div>
-    </div>
-    <div class="piaodai">
-      <div class="zanzhu"><Zanzhu /></div>
-    </div>
-    <div class="yx"></div>
-    <Share :show.sync="isShowShare" />
   </div>
 </template>
 
 <script>
 import WechatShare from './WechatShare'
-import Login from './Login'
 import Share from './Share'
 import Zanzhu from './Zanzhu'
 import Helper from './Helper'
@@ -45,38 +46,69 @@ export default {
     Zanzhu,
     Share,
     Helper,
-    WechatShare,
-    Login
+    WechatShare
   },
   data () {
     return {
       result: {},
       isShowShare: false,
       shareUrl: '',
-      isWxShare: false
+      isWxShare: false,
+      pageIndex: 0
     }
   },
   methods: {
     setWxShare () {
-      this.shareUrl = 'http://partyjo.nextdog.cc/niuqi/#/' + 'help/' + this.result.id
+      this.shareUrl = 'http://partyjo.nextdog.cc/nq/#/' + 'help/' + this.result.id
       this.isWxShare = true
     },
     showShare () {
       this.isShowShare = true
     },
-    getGuessResult () {
+    getGuessResult (cb) {
       this.axios.get('/guess/get?openid=' + this.userInfo.openid).then(res => {
         if (res.code === 0) {
           cache.set(this.resultKey, res.data)
           this.result = res.data
-          this.setWxShare()
-          setTimeout(() => {
-            window.scrollTo(0, 0)
-          }, 300)
+          cb()
         } else {
           this.$layer.msg(res.msg)
         }
       })
+    },
+    login (cb) {
+      this.axios.post('/weixin/isLogin', {
+      // this.axios.post('/weixin/isLoginTest', {
+        url: window.location.href
+      }).then(res => {
+        if (res.code === 0) {
+          cache.set(this.loginKey, res.data)
+          this.userInfo = res.data
+          cb()
+        } else if (res.code === 9999) {
+          window.location.href = res.data
+        } else {
+          this.$layer.msg(res.msg)
+        }
+      })
+    },
+    show () {
+      const result = cache.get(this.resultKey)
+      if (result) {
+        this.result = result
+        this.showResult()
+      } else {
+        this.getGuessResult(() => {
+          this.showResult()
+        })
+      }
+    },
+    showResult () {
+      this.pageIndex = 1
+      setTimeout(() => {
+        window.scrollTo(0, 0)
+      }, 300)
+      this.setWxShare()
     }
   },
   mounted () {
@@ -84,16 +116,11 @@ export default {
     this.resultKey = this.GLOBAL.resultKey
     this.userInfo = cache.get(this.loginKey)
     if (this.userInfo) {
-      const result = cache.get(this.resultKey)
-      if (result) {
-        this.result = result
-        setTimeout(() => {
-          window.scrollTo(0, 0)
-        }, 300)
-        this.setWxShare()
-      } else {
-        this.getGuessResult()
-      }
+      this.show()
+    } else {
+      this.login(() => {
+        this.show()
+      })
     }
   }
 }
@@ -136,6 +163,12 @@ export default {
     position: fixed;
     left: @l * 1px;
     top: @t * 1px;
+  }
+
+  .tx-c {
+    text-align: center;
+    color: #fff;
+    font-size: 24px;
   }
 
   .page {

@@ -1,7 +1,6 @@
 <template>
   <div class="container">
-    <Login />
-    <div v-if="pageIndex === 0" class="tm">登陆失败<br>刷新一下哟</div>
+    <div v-if="pageIndex === 0" class="tx-c">登陆中...</div>
     <guess v-else />
     <WechatShare :url="shareUrl" />
   </div>
@@ -12,42 +11,77 @@ import cache from '../libs/cache'
 
 import WechatShare from './WechatShare'
 import Guess from './Guess'
-import Reuslt from './Result'
-import Login from './Login'
 
 export default {
   name: 'Home',
   components: {
     Guess,
-    Reuslt,
-    Login,
     WechatShare
   },
   data () {
     return {
       pageIndex: 0,
-      shareUrl: 'http://partyjo.nextdog.cc/niuqi/'
+      shareUrl: 'http://partyjo.nextdog.cc/nq/'
     }
   },
   methods: {
     isLogin () {
       return cache.get(this.loginKey)
     },
+    login (cb) {
+      this.axios.post('/weixin/isLogin', {
+      // this.axios.post('/weixin/isLoginTest', {
+        url: window.location.href
+      }).then(res => {
+        if (res.code === 0) {
+          cache.set(this.loginKey, res.data)
+          this.userInfo = res.data
+          cb()
+        } else if (res.code === 9999) {
+          window.location.href = res.data
+        } else {
+          this.$layer.msg(res.msg)
+        }
+      })
+    },
+    getGuessResult (cb) {
+      this.axios.get('/guess/get?openid=' + this.userInfo.openid).then(res => {
+        if (res.code === 0) {
+          cache.set(this.resultKey, res.data)
+          this.result = res.data
+          cb()
+        } else {
+          this.pageIndex = 1
+        }
+      })
+    },
     show () {
-      const result = cache.get(this.resultKey)
-      if (result) {
-        // window.location.href = '/#/result'
-        window.location.href = 'http://partyjo.nextdog.cc/niuqi/#/result'
+      this.result = cache.get(this.resultKey)
+      if (this.result) {
+        this.showResult()
       } else {
-        this.pageIndex = 1
+        this.getGuessResult(() => {
+          this.showResult()
+        })
+      }
+    },
+    showResult () {
+      if (this.result.openid === this.userInfo.openid) {
+        // window.location.href = '/#/result'
+        window.location.href = 'http://partyjo.nextdog.cc/nq/#/result'
       }
     }
   },
   mounted () {
     this.loginKey = this.GLOBAL.loginKey
     this.resultKey = this.GLOBAL.resultKey
-    if (this.isLogin()) {
+    this.userInfo = this.isLogin()
+    if (this.userInfo) {
       this.show()
+    } else {
+      this.login(() => {
+        this.show()
+      })
     }
   }
 }
@@ -59,7 +93,7 @@ export default {
     height: 1000px;
   }
 
-  .tm {
+  .tx-c {
     text-align: center;
     color: #fff;
     font-size: 24px;

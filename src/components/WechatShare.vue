@@ -3,14 +3,14 @@
 </template>
 
 <script>
-// import wx from 'weixin-js-sdk'
+import wx from 'weixin-js-sdk'
 
 export default {
   name: 'WehatShare',
   props: {
     url: {
       type: String,
-      default: 'http://partyjo.nextdog.cc/niuqi/'
+      default: 'http://partyjo.nextdog.cc/nq/'
     }
   },
   computed: {

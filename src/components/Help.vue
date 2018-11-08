@@ -1,7 +1,7 @@
 <template>
-  <div>
-    <Login />
-    <div class="page">
+  <div class="page">
+    <div v-if="pageIndex === 0" class="text-c">登陆中...</div>
+    <div v-else>
       <WechatShare :url="shareUrl" />
       <div class="head">
         <div class="tm"></div>
@@ -26,8 +26,8 @@
           <button class="submit" v-on:click="submit"></button>
         </div>
       </div>
-      <a class="iwant" href="http://partyjo.nextdog.cc/niuqi/#/"></a>
-      <Helper v-if="isShowHelper" isHelper=1 :userid="helperInfo.openid" />
+      <a class="iwant" href="http://partyjo.nextdog.cc/nq/#/"></a>
+      <Helper isHelper=1 :userid="helperInfo.openid" />
       <div class="piaodai">
         <div class="zanzhu"><Zanzhu /></div>
       </div>
@@ -41,7 +41,6 @@ import { formatPrice } from '../libs/math'
 import cache from '../libs/cache'
 import Zanzhu from './Zanzhu'
 import Helper from './Helper'
-import Login from './Login'
 import WechatShare from './WechatShare'
 
 export default {
@@ -49,33 +48,47 @@ export default {
   components: {
     Zanzhu,
     Helper,
-    Login,
     WechatShare
   },
   data () {
     return {
       helperInfo: {},
+      pageIndex: 0,
       guessData: {
         amount: ''
       },
-      isShowHelper: false,
-      shareUrl: 'http://partyjo.nextdog.cc/niuqi/#/help/' + this.$route.params.id
+      shareUrl: 'http://partyjo.nextdog.cc/nq/#/help/' + this.$route.params.id
     }
   },
   methods: {
+    login (cb) {
+      this.axios.post('/weixin/isLogin', {
+      // this.axios.post('/weixin/isLoginTest', {
+        url: window.location.href
+      }).then(res => {
+        if (res.code === 0) {
+          cache.set(this.loginKey, res.data)
+          this.userInfo = res.data
+          cb()
+        } else if (res.code === 9999) {
+          window.location.href = res.data
+        } else {
+          this.$layer.msg(res.msg)
+        }
+      })
+    },
     gethelper () {
       const id = this.$route.params.id
-      console.log(id)
       this.axios.get('/guess/get?id=' + id).then(res => {
         if (res.code === 0) {
           if (res.data.openid === this.userInfo.openid) {
             window.location.href = 'http://partyjo.nextdog.cc/niuqi/#/result'
           } else {
             this.helperInfo = res.data
-            this.isShowHelper = true
+            this.pageIndex = 1
           }
         } else {
-          this.$layer.msg('当前页面出错了')
+          this.$layer.msg('当前参与者不存在')
         }
       })
     },
@@ -112,9 +125,14 @@ export default {
   },
   mounted () {
     this.loginKey = this.GLOBAL.loginKey
+    this.resultKey = this.GLOBAL.resultKey
     this.userInfo = cache.get(this.loginKey)
     if (this.userInfo) {
       this.gethelper()
+    } else {
+      this.login(() => {
+        this.gethelper()
+      })
     }
   }
 }
@@ -178,6 +196,12 @@ export default {
     .ps(30, 30);
     .wd(158, 48);
     .bg('../assets/niuqi.png');
+  }
+
+  .text-c {
+    text-align: center;
+    color: #fff;
+    font-size: 24px;
   }
 
   .tm {

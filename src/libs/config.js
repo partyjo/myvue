@@ -1,6 +1,6 @@
 const config = {
-  loginKey: 'loginKeya',
-  resultKey: 'resultKeya',
+  loginKey: 'loginKeyna',
+  resultKey: 'resultKeyna',
   helpKey: 'helpKey6'
 }
 
