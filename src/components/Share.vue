@@ -1,10 +1,22 @@
 <template>
-  <div class="share"></div>
+  <div class="share" v-if="show" @click="hide"></div>
 </template>
 
 <script>
 export default {
-  name: 'Share'
+  name: 'Share',
+  props: ['show'],
+  methods: {
+    hide () {
+      this.$emit('update:show', false)
+    }
+  },
+  created () {
+    console.log('share created')
+  },
+  mounted () {
+    console.log('share mounted')
+  }
 }
 </script>
 
