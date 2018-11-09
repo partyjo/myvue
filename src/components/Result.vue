@@ -15,7 +15,7 @@
       <div class="msg">邀请好友竞猜，额外为你贡献竞猜额</div>
       <div class="yaoq-btn" v-on:click="showShare"></div>
     </div>
-    <Helper :v-if="showHelper" isHelper=0 :userid="result.openid" />
+    <Helpers :users="users" />
     <div class="qr">
       <div class="title">开奖时间</div>
       <div class="msg">扫码关注，查收中奖结果</div>
@@ -36,7 +36,7 @@ import WechatShare from './WechatShare'
 import Login from './Login'
 import Share from './Share'
 import Zanzhu from './Zanzhu'
-import Helper from './Helper'
+import Helpers from './Helpers'
 import cache from '../libs/cache'
 
 export default {
@@ -44,7 +44,7 @@ export default {
   components: {
     Zanzhu,
     Share,
-    Helper,
+    Helpers,
     WechatShare,
     Login
   },
@@ -54,10 +54,18 @@ export default {
       isShowShare: false,
       shareUrl: '',
       isWxShare: false,
-      showHelper: false
+      users: []
     }
   },
   methods: {
+    getHelpers (userid) {
+      this.axios.get('/help/page?userid=' + userid).then(res => {
+        if (res.code === 0) {
+          console.log(res.data)
+          this.users = res.data
+        }
+      })
+    },
     setWxShare () {
       this.shareUrl = 'http://partyjo.nextdog.cc/niuqi/#/' + 'help/' + this.result.id
       this.isWxShare = true
@@ -70,11 +78,11 @@ export default {
         if (res.code === 0) {
           cache.set(this.resultKey, res.data)
           this.result = res.data
+          this.getHelpers(this.result.openid)
           this.setWxShare()
           setTimeout(() => {
             window.scrollTo(0, 0)
           }, 300)
-          this.showHelper = true
         } else {
           this.$layer.msg(res.msg)
         }
@@ -92,7 +100,7 @@ export default {
         setTimeout(() => {
           window.scrollTo(0, 0)
         }, 300)
-        this.showHelper = true
+        this.getHelpers(this.result.openid)
         this.setWxShare()
       } else {
         this.getGuessResult()

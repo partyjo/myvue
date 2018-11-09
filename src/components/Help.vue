@@ -284,7 +284,7 @@ export default {
 
     .submit {
       .wd(560, 100);
-      .bg('../assets/btn.png');
+      .bg('../assets/help-btn.png');
       background-color: transparent;
       border: none;
       outline: none;

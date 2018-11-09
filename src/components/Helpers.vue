@@ -15,51 +15,15 @@
 import cache from '../libs/cache'
 
 export default {
-  name: 'Helper',
-  props: ['isHelper', 'userid'],
+  name: 'Helpers',
+  props: ['users'],
   data () {
-    return {
-      users: []
-    }
+    return {}
   },
   computed: {
     msg () {
-      return this.isHelper === '1' ? `已有${this.users.length}人为TA竞猜！` : `已有${this.users.length}人为你竞猜！`
+      return `已有${this.users.length}人为你竞猜！`
     }
-  },
-  methods: {
-    getHelper () {
-      if (this.userid) {
-        this.axios.get('/help/page?userid=' + this.userid).then(res => {
-          if (res.code === 0) {
-            console.log(res.data)
-            this.users = res.data
-          }
-        })
-      } else if (cache.get(this.GLOBAL.resultKey)) {
-        const user = cache.get(this.GLOBAL.resultKey)
-        this.axios.get('/help/page?userid=' + user.openid).then(res => {
-          if (res.code === 0) {
-            console.log(res.data)
-            this.users = res.data
-          }
-        })
-      } else {
-        setTimeout(() => {
-          const user = cache.get(this.GLOBAL.resultKey)
-          this.axios.get('/help/page?userid=' + user.openid).then(res => {
-            if (res.code === 0) {
-              console.log(res.data)
-              this.users = res.data
-            }
-          })
-        }, 100)
-      }
-    }
-  },
-  created () {
-    console.log('helper created')
-    this.getHelper()
   }
 }
 </script>
