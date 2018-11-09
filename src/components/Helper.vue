@@ -1,5 +1,5 @@
 <template>
-  <div class="users" :link="link">
+  <div class="users">
     <div class="num">{{msg}}</div>
     <ul>
       <li v-for="item in users" :key="item.openid">
@@ -23,10 +23,6 @@ export default {
     }
   },
   computed: {
-    link () {
-      this.getHelper()
-      return this.userid
-    },
     msg () {
       return this.isHelper === '1' ? `已有${this.users.length}人为TA竞猜！` : `已有${this.users.length}人为你竞猜！`
     }

@@ -15,7 +15,7 @@
       <div class="msg">邀请好友竞猜，额外为你贡献竞猜额</div>
       <div class="yaoq-btn" v-on:click="showShare"></div>
     </div>
-    <Helper isHelper=0 :userid="result.openid" />
+    <Helper :v-if="showHelper" isHelper=0 :userid="result.openid" />
     <div class="qr">
       <div class="title">开奖时间</div>
       <div class="msg">扫码关注，查收中奖结果</div>
@@ -53,7 +53,8 @@ export default {
       result: {},
       isShowShare: false,
       shareUrl: '',
-      isWxShare: false
+      isWxShare: false,
+      showHelper: false
     }
   },
   methods: {
@@ -73,6 +74,7 @@ export default {
           setTimeout(() => {
             window.scrollTo(0, 0)
           }, 300)
+          this.showHelper = true
         } else {
           this.$layer.msg(res.msg)
         }
@@ -90,6 +92,7 @@ export default {
         setTimeout(() => {
           window.scrollTo(0, 0)
         }, 300)
+        this.showHelper = true
         this.setWxShare()
       } else {
         this.getGuessResult()
